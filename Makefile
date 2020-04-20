@@ -1,7 +1,7 @@
 # Change the configuration here.
 # Include your useid/name as part of IMAGENAME to avoid conflicts
-IMAGENAME = docker-test
-CONFIG    = basic
+IMAGENAME = maskrcnn
+CONFIG    = tensorflow
 COMMAND   = bash
 DISKS     = -v /data/deep/data:/data:ro -v $(PWD):/project
 USERID    = $(shell id -u)
