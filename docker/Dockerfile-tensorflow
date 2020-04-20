@@ -15,7 +15,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/project
 
 # Install any needed packages from apt
-RUN apt-get update && apt-get install -y sudo python3 python3-pip
+RUN apt-get update && apt-get install -y sudo python3 python3-pip git
 # RUN pip3 install --trusted-host pypi.python.org -r xxx
 
 # Configure user
@@ -23,6 +23,10 @@ RUN groupadd -g $gid $user
 RUN useradd -u $uid -g $gid $user
 RUN usermod -a -G sudo $user
 RUN passwd -d $user
+
+# following https://machinelearningmastery.com/how-to-train-an-object-detection-model-with-keras/
+RUN git clone https://github.com/matterport/Mask_RCNN.git
+RUN cd Mask_RCNN && python setup.py install
 
 # Run when the container launches
 CMD "bash"
