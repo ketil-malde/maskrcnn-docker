@@ -17,8 +17,12 @@ SSHFSOPTIONS = --cap-add SYS_ADMIN --device /dev/fuse
 
 USERCONFIG   = --build-arg user=$(USERNAME) --build-arg uid=$(USERID) --build-arg gid=$(GROUPID)
 
+.PHONY: .docker test
+
 .docker: docker/Dockerfile-$(CONFIG)
 	docker build $(USERCONFIG) -t $(USERNAME)-$(IMAGENAME) -f docker/Dockerfile-$(CONFIG) docker
+
+WEIGHTS = mask_rcnn_coco.h5
 
 # Using -it for interactive use
 RUNCMD=docker run $(RUNTIME) --rm --user $(USERID):$(GROUPID) $(PORT) $(SSHFSOPTIONS) $(DISKS) -it $(USERNAME)-$(IMAGENAME)
@@ -30,3 +34,9 @@ default: .docker
 # requires CONFIG=jupyter
 jupyter:
 	$(RUNCMD) jupyter notebook --ip '$(hostname -I)' --port 8888
+
+$(WEIGHTS): src/download_weights.py
+	$(RUNCMD) python3 src/download_weights.py
+
+test: src/test.py .docker $(WEIGHTS)
+	$(RUNCMD) python3 src/test.py
