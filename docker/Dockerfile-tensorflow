@@ -24,7 +24,8 @@ RUN usermod -a -G sudo $user
 RUN passwd -d $user
 
 # following https://machinelearningmastery.com/how-to-train-an-object-detection-model-with-keras/
-RUN git clone https://github.com/matterport/Mask_RCNN.git
+RUN git clone https://github.com/rteuwens/Mask_RCNN.git
+# The official version needs a small fix (https://github.com/matterport/Mask_RCNN.git)
 RUN cd Mask_RCNN && python setup.py install
 
 RUN pip3 install --trusted-host pypi.python.org numpy scipy Pillow cython matplotlib scikit-image keras>=2.0.8 opencv-python h5py imgaug IPython

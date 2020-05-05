@@ -38,5 +38,9 @@ jupyter:
 $(WEIGHTS): src/download_weights.py
 	$(RUNCMD) python3 src/download_weights.py
 
+train: src/test.py .docker $(WEIGHTS)
+	$(RUNCMD) python3 src/train.py
+
 test: src/test.py .docker $(WEIGHTS)
 	$(RUNCMD) python3 src/test.py
+
