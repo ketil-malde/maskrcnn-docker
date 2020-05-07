@@ -107,7 +107,7 @@ print('Train: %d' % len(train_set.image_ids))
 
 # prepare test/val set
 test_set = DeepVisionDataset()
-test_set.load_dataset('/data', is_train=False)
+test_set.load_dataset('/data/validation', is_train=False)
 test_set.prepare()
 
 print('Test: %d' % len(test_set.image_ids))
