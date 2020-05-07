@@ -1,14 +1,1 @@
-Base configuration for a Docker instance
-
-Use as a starting point for projects.  Don't clone this directly, but
-fork it to your own namespace in GitLab (git.imr.no), and then
-go to Settings/Advanced and 'change path' to give it a unique name.
-
-Clone it, and
-
-0. Update this README to reflect the new project
-1. Edit the Dockerfile to add packages to be installed via apt-get
-2. Edit requirements.txt and add packages to be installed by pip
-3. Edit the Makefile to set the name of the image, and the program to run
-
-Then type 'make .docker' to build the image, or just 'make' to build and run in one go.
+Dockerized version of the Mattermost implementation of Mask R-CNN
