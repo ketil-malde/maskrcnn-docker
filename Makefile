@@ -3,12 +3,12 @@
 IMAGENAME = maskrcnn
 CONFIG    = tensorflow
 COMMAND   = bash
-DISKS     = -v /data/deep/data:/data:ro -v $(PWD):/project
+DISKS     = -v $(PWD)/../imagesim-docker:/data:ro -v $(PWD):/project
 USERID    = $(shell id -u)
 GROUPID   = $(shell id -g)
 USERNAME  = $(shell whoami)
 PORT      = -p 8888:8888
-RUNTIME   =
+RUNTIME   = --gpus=1
 # --runtime=nvidia 
 # No need to change anything below this line
 
@@ -17,7 +17,7 @@ SSHFSOPTIONS = --cap-add SYS_ADMIN --device /dev/fuse
 
 USERCONFIG   = --build-arg user=$(USERNAME) --build-arg uid=$(USERID) --build-arg gid=$(GROUPID)
 
-.PHONY: .docker test
+.PHONY: .docker test train
 
 .docker: docker/Dockerfile-$(CONFIG)
 	docker build $(USERCONFIG) -t $(USERNAME)-$(IMAGENAME) -f docker/Dockerfile-$(CONFIG) docker
@@ -38,9 +38,9 @@ jupyter:
 $(WEIGHTS): src/download_weights.py
 	$(RUNCMD) python3 src/download_weights.py
 
-train: src/test.py .docker $(WEIGHTS)
+train: .docker src/test.py $(WEIGHTS)
 	$(RUNCMD) python3 src/train.py
 
-test: src/test.py .docker $(WEIGHTS)
+test: .docker src/test.py $(WEIGHTS)
 	$(RUNCMD) python3 src/test.py
 
