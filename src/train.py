@@ -66,7 +66,7 @@ class DeepVisionDataset(Dataset):
         for i, [p,xmin,ymin,xmax,ymax,classname] in enumerate(lines):
             class_ids.append(self.class_names.index(classname))
             img = Image.open(imgpath[:-4]+'_mask_'+str(i)+'.png')
-            masks[:,:,i] = asarray(img.split()[-1])/255
+            masks[:,:,i] = asarray(img.split()[0])/255  # alpha channel?  Nooo!
 
         return masks, asarray(class_ids, dtype='int32')
 
