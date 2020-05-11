@@ -16,14 +16,7 @@ from mrcnn.model import MaskRCNN
 # - train and val split is parameter
 # - moron mask must be improved
 
-# define a configuration for the model
-class DeepVisionConfig(Config):
-    NAME = "deepvision_cfg"
-    NUM_CLASSES = 4 + 1  # herring, blue whiting, mackerel, lanternfish
-    STEPS_PER_EPOCH = 131
-    # more parameters...
-
-class_names = ['BG','bluewhiting','herring','lanternfish','mackerel']
+from config import DeepVisionConfig, class_names
     
 # class that defines and loads the data set
 class DeepVisionDataset(Dataset):
