@@ -12,26 +12,28 @@ from mrcnn import utils
 import mrcnn.model as modellib
 from mrcnn import visualize
 
+from config import DeepVisionConfig, class_names, pr
+import config as C
+
 if not os.path.exists('mask_rcnn_coco.h5'):
-    print('No weights found (use download_weights.py)')
+    pr('No weights found (use download_weights.py)')
     exit()
 
 # Directory of images to run detection on
 IMAGE_DIR = "/data/test"
 
-from config import DeepVisionConfig, class_names
-config = DeepVisionConfig()
-config.BATCH_SIZE = 1
-config.IMAGES_PER_GPU = 1
-config.display()
+conf = DeepVisionConfig()
+conf.BATCH_SIZE = 1
+conf.IMAGES_PER_GPU = 1
+conf.display()
 
 # Create model object in inference mode.
-model = modellib.MaskRCNN(mode="inference", model_dir='./', config=config)
+model = modellib.MaskRCNN(mode="inference", model_dir='./', config=conf)
 weights = model.find_last()
 out_dir = os.path.join(os.path.dirname(weights),'test_output')
-print('*** Using weights from: ', weights)
-print('    Test images from:', IMAGE_DIR)
-print('    Writing output to: ', out_dir)
+pr('    Using weights from: ', weights)
+pr('    Test images from:', IMAGE_DIR)
+pr('    Writing output to: ', out_dir)
 
 os.mkdir(out_dir)
 

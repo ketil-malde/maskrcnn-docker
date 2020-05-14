@@ -16,14 +16,14 @@ from mrcnn.model import MaskRCNN
 # - train and val split is parameter
 # - moron mask must be improved
 
-from config import DeepVisionConfig, class_names
-import config
+from config import DeepVisionConfig, pr
+import config as C # class_names, train_layers, initial_weights
 
 # class that defines and loads the data set
 class DeepVisionDataset(Dataset):
 
     def load_dataset(self, dataset_dirs, is_train=True):
-         for i,n in enumerate(class_names[1:]):
+         for i,n in enumerate(C.class_names[1:]):
              self.add_class("dataset", i, n)
 
          if isinstance(dataset_dirs, str):
@@ -35,7 +35,7 @@ class DeepVisionDataset(Dataset):
 
          for images_dir in images_dirs:
              filenames = [f for f in os.listdir(images_dir) if re.match(r'sim-201[78]_[0-9]+\.png', f)]
-             print("*** Directory: ",images_dir,"Number of images seen: ", len(filenames), "***")
+             pr("*** Directory: ",images_dir,"Number of images seen: ", len(filenames), "***")
              for filename in filenames:
                  image_id = filename[:-4]  # skip .png suffix
                  # skip all images after 150 if we are building the train set
@@ -82,14 +82,14 @@ subdirs = ['sim-2017', 'sim-2018']
 train_set = DeepVisionDataset()
 train_set.load_dataset([os.path.join('/data',y) for y in subdirs], is_train=True)
 train_set.prepare()
-print('Train: %d' % len(train_set.image_ids))
+pr('Train: %d' % len(train_set.image_ids))
 
 # prepare test/val set
 test_set = DeepVisionDataset()
 test_set.load_dataset([os.path.join('/data/validation',y) for y in subdirs], is_train=False)
 test_set.prepare()
 
-print('Test: %d' % len(test_set.image_ids))
+pr('Test: %d' % len(test_set.image_ids))
 # prepare config
 config = DeepVisionConfig()
 config.display()
@@ -99,12 +99,23 @@ logger = CSVLogger("train.log", append=True, separator='\t')
 
 # define the model, load weights and run training
 model = MaskRCNN(mode='training', model_dir='./', config=config)
-if False:
-    model.load_weights('mask_rcnn_coco.h5', by_name=True, exclude=["mrcnn_class_logits", "mrcnn_bbox_fc",  "mrcnn_bbox", "mrcnn_mask"])
-else:
-    weights = model.find_last()
-    print('*** Using weights from: ', weights)
-    model.load_weights(weights, by_name=True)
 
-model.train(train_set, test_set, custom_callbacks=[logger], learning_rate=config.LEARNING_RATE, epochs=10, layers=config.train_layers)
+try:
+    weights = model.find_last()
+except FileNotFoundError:
+    pr('Using initial weights from', C.initial_weights)
+    if os.path.isfile('train.log'):
+        pr('Backing up training log')
+        os.rename('train.log', 'train.log.old')
+    model.load_weights(C.initial_weights, by_name=True, exclude=["mrcnn_class_logits", "mrcnn_bbox_fc",  "mrcnn_bbox", "mrcnn_mask"])
+    eps = C.epochs
+    pr('Training',eps,'epochs.')
+else:
+    old_epochs = int(re.findall('\d+', weights)[-2]) # end is .h5
+    pr('Using weights from: ', weights)
+    model.load_weights(weights, by_name=True)
+    eps = old_epochs + C.epochs
+    pr('Training from epoch',old_epochs,'to epoch',eps)
+
+model.train(train_set, test_set, custom_callbacks=[logger], learning_rate=config.LEARNING_RATE, epochs=eps, layers=C.train_layers)
 
