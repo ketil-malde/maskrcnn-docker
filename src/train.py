@@ -16,7 +16,8 @@ from mrcnn.model import MaskRCNN
 # - train and val split is parameter
 # - moron mask must be improved
 
-from config import DeepVisionConfig, pr
+from util import pr, find_last
+from config import DeepVisionConfig
 import config as C # class_names, train_layers, initial_weights
 
 # class that defines and loads the data set
@@ -101,7 +102,7 @@ logger = CSVLogger("train.log", append=True, separator='\t')
 model = MaskRCNN(mode='training', model_dir='./', config=config)
 
 try:
-    weights = model.find_last()
+    weights, old_epochs = find_last(model)
 except FileNotFoundError:
     pr('Using initial weights from', C.initial_weights)
     if os.path.isfile('train.log'):
@@ -111,10 +112,9 @@ except FileNotFoundError:
     eps = C.epochs
     pr('Training',eps,'epochs.')
 else:
-    old_epochs = int(re.findall('\d+', weights)[-2]) # end is .h5
     pr('Using weights from: ', weights)
     model.load_weights(weights, by_name=True)
-    eps = old_epochs + C.epochs
+    eps = int(old_epochs) + C.epochs
     pr('Training from epoch',old_epochs,'to epoch',eps)
 
 model.train(train_set, test_set, custom_callbacks=[logger], learning_rate=config.LEARNING_RATE, epochs=eps, layers=C.train_layers)

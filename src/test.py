@@ -12,7 +12,8 @@ from mrcnn import utils
 import mrcnn.model as modellib
 from mrcnn import visualize
 
-from config import DeepVisionConfig, class_names, pr
+from util import pr, find_last
+from config import DeepVisionConfig, class_names
 import config as C
 
 if not os.path.exists('mask_rcnn_coco.h5'):
@@ -29,8 +30,9 @@ conf.display()
 
 # Create model object in inference mode.
 model = modellib.MaskRCNN(mode="inference", model_dir='./', config=conf)
-weights = model.find_last()
-out_dir = os.path.join(os.path.dirname(weights),'test_output')
+weights, last_epoch = find_last(model)
+out_dir = os.path.join(os.path.dirname(weights),'test_output_'+last_epoch)
+
 pr('    Using weights from: ', weights)
 pr('    Test images from:', IMAGE_DIR)
 pr('    Writing output to: ', out_dir)

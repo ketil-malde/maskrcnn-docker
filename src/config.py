@@ -13,9 +13,3 @@ class_names = ['BG','bluewhiting','herring','lanternfish','mackerel']
 train_layers = '3+'
 initial_weights = 'mask_rcnn_coco.h5'
 epochs = 10
-
-# Print with color to distinguish from all the text barf
-def pr(*strng):
-    print('\033[93m', end='')
-    for s in strng: print(s, end=' ')
-    print('\033[0m')
