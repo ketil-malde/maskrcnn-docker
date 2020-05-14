@@ -8,3 +8,6 @@ class DeepVisionConfig(Config):
     # more parameters...
 
 class_names = ['BG','bluewhiting','herring','lanternfish','mackerel']
+
+# layers to train.  Can be one of 'all', '3+', '4+', 'heads'
+train_layers = '3+'

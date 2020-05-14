@@ -17,7 +17,8 @@ from mrcnn.model import MaskRCNN
 # - moron mask must be improved
 
 from config import DeepVisionConfig, class_names
-    
+import config
+
 # class that defines and loads the data set
 class DeepVisionDataset(Dataset):
 
@@ -93,8 +94,17 @@ print('Test: %d' % len(test_set.image_ids))
 config = DeepVisionConfig()
 config.display()
 
+from tensorflow.keras.callbacks import CSVLogger
+logger = CSVLogger("train.log", append=True, separator='\t')
+
 # define the model, load weights and run training
 model = MaskRCNN(mode='training', model_dir='./', config=config)
-model.load_weights('mask_rcnn_coco.h5', by_name=True, exclude=["mrcnn_class_logits", "mrcnn_bbox_fc",  "mrcnn_bbox", "mrcnn_mask"])
-model.train(train_set, test_set, learning_rate=config.LEARNING_RATE, epochs=5, layers='heads')
+if False:
+    model.load_weights('mask_rcnn_coco.h5', by_name=True, exclude=["mrcnn_class_logits", "mrcnn_bbox_fc",  "mrcnn_bbox", "mrcnn_mask"])
+else:
+    weights = model.find_last()
+    print('*** Using weights from: ', weights)
+    model.load_weights(weights, by_name=True)
+
+model.train(train_set, test_set, custom_callbacks=[logger], learning_rate=config.LEARNING_RATE, epochs=10, layers=config.train_layers)
 
