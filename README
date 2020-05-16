@@ -1,1 +1,18 @@
 Dockerized version of the Mattermost implementation of Mask R-CNN
+
+Should only depend on having a working docker environment (and user
+rights to run docker) an GPU drivers (CUDA) installed in the host
+system.
+
+The makefile contains everything needed for building and running,
+specifically:
+
+    make - builds the docker instance and drops you in a shell
+    make .docker - only build the docker instance
+    make train   - run a set of training epochs
+    make test    - test the latest trained network
+
+Most interesting configurations should be in the Makefile and in
+src/config.py.
+
+The default is configured to learn from the output of imagesim-docker.

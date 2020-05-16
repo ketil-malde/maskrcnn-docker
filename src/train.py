@@ -11,11 +11,6 @@ from mrcnn.utils import Dataset
 from mrcnn.config import Config
 from mrcnn.model import MaskRCNN
 
-# TODO:
-# - dataset dir etc in separate config.py
-# - train and val split is parameter
-# - moron mask must be improved
-
 from util import pr, find_last
 from config import DeepVisionConfig
 import config as C # class_names, train_layers, initial_weights
@@ -39,12 +34,6 @@ class DeepVisionDataset(Dataset):
              pr("*** Directory: ",images_dir,"Number of images seen: ", len(filenames), "***")
              for filename in filenames:
                  image_id = filename[:-4]  # skip .png suffix
-                 # skip all images after 150 if we are building the train set
-                 # if is_train and int(image_id) >= 150:
-                 #    continue
-                 # skip all images before 150 if we are building the test/val set
-                 # if not is_train and int(image_id) < 150:
-                 #    continue
                  img_path = os.path.join(images_dir,filename)
                  ann_path = os.path.join(images_dir,image_id + '.txt')
                  self.add_image('dataset', image_id=image_id, path=img_path, annotation=ann_path)
