@@ -21,7 +21,6 @@ if not os.path.exists('mask_rcnn_coco.h5'):
     exit()
 
 # Directory of images to run detection on
-IMAGE_DIR = "/data/test"
 
 conf = DeepVisionConfig()
 conf.BATCH_SIZE = 1
@@ -34,15 +33,15 @@ weights, last_epoch = find_last(model)
 out_dir = os.path.join(os.path.dirname(weights),'test_output_'+last_epoch)
 
 pr('    Using weights from: ', weights)
-pr('    Test images from:', IMAGE_DIR)
+pr('    Test images from:', C.test_dir)
 pr('    Writing output to: ', out_dir)
 
 os.mkdir(out_dir)
 
 # Load weights trained on MS-COCO
 model.load_weights(weights, by_name=True)
-for f in os.listdir(IMAGE_DIR):
-    image = skimage.io.imread(os.path.join(IMAGE_DIR, f))
+for f in os.listdir(C.test_dir):
+    image = skimage.io.imread(os.path.join(C.test_dir, f))
     # Run detection
     results = model.detect([image], verbose=1)
     # Visualize results

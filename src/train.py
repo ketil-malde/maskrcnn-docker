@@ -66,17 +66,15 @@ class DeepVisionDataset(Dataset):
         info = self.image_info[image_id]
         return info['path']
 
-subdirs = ['sim-2017', 'sim-2018']
-
 # prepare train set
 train_set = DeepVisionDataset()
-train_set.load_dataset([os.path.join('/data',y) for y in subdirs], is_train=True)
+train_set.load_dataset(C.train_dirs, is_train=True)
 train_set.prepare()
 pr('Train: %d' % len(train_set.image_ids))
 
 # prepare test/val set
 test_set = DeepVisionDataset()
-test_set.load_dataset([os.path.join('/data/validation',y) for y in subdirs], is_train=False)
+test_set.load_dataset(C.validation_dirs, is_train=False)
 test_set.prepare()
 
 pr('Test: %d' % len(test_set.image_ids))

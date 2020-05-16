@@ -1,5 +1,6 @@
 # define a configuration for the model
 from mrcnn.config import Config
+import os
 
 class DeepVisionConfig(Config):
     NAME = "deepvision_cfg"
@@ -13,3 +14,8 @@ class_names = ['BG','bluewhiting','herring','lanternfish','mackerel']
 train_layers = '3+'
 initial_weights = 'mask_rcnn_coco.h5'
 epochs = 10
+
+subdirs = ['sim-2017', 'sim-2018']
+train_dirs = [os.path.join('/data',y) for y in subdirs]
+validation_dirs = [os.path.join('/data/validation',y) for y in subdirs]
+test_dir = "/data/test"
