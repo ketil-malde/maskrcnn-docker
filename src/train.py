@@ -33,10 +33,11 @@ class DeepVisionDataset(Dataset):
              filenames = [f for f in os.listdir(images_dir) if re.match(r'sim-201[78]_[0-9]+\.png', f)]
              pr("*** Directory: ",images_dir,"Number of images seen: ", len(filenames), "***")
              for filename in filenames:
-                 image_id = filename[:-4]  # skip .png suffix
-                 img_path = os.path.join(images_dir,filename)
-                 ann_path = os.path.join(images_dir,image_id + '.txt')
-                 self.add_image('dataset', image_id=image_id, path=img_path, annotation=ann_path)
+                 self.add_image('dataset',
+                                image_id = filename[:-4]  # skip .png suffix
+                                path = os.path.join(images_dir,filename)
+                                annotation = os.path.join(images_dir,image_id + '.txt')
+                 )
 
     # load the masks for an image
     def load_mask(self, image_id):
