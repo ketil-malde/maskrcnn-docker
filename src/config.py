@@ -15,7 +15,7 @@ train_layers = '3+'
 initial_weights = 'mask_rcnn_coco.h5'
 epochs = 10
 
-subdirs = ['sim-2017', 'sim-2018']
-train_dirs = [os.path.join('/data',y) for y in subdirs]
-validation_dirs = [os.path.join('/data/validation',y) for y in subdirs]
-test_dir = "/data/test"
+subdirs = ['2017', '2018']
+train_dirs = [os.path.join('/data','sim-'+y) for y in subdirs]
+validation_dirs = [os.path.join('/data/validation','sim-'+y) for y in subdirs]
+test_dirs = [os.path.join('/data','test-'+y) for y in subdirs]

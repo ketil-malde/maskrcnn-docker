@@ -33,20 +33,25 @@ weights, last_epoch = find_last(model)
 out_dir = os.path.join(os.path.dirname(weights),'test_output_'+last_epoch)
 
 pr('    Using weights from: ', weights)
-pr('    Test images from:', C.test_dir)
+pr('    Test images from:', C.test_dirs)
 pr('    Writing output to: ', out_dir)
 
 os.mkdir(out_dir)
 
 # Load weights trained on MS-COCO
 model.load_weights(weights, by_name=True)
-for f in os.listdir(C.test_dir):
-    image = skimage.io.imread(os.path.join(C.test_dir, f))
-    # Run detection
-    results = model.detect([image], verbose=1)
-    # Visualize results
-    r = results[0]
-    visualize.display_instances(image, r['rois'], r['masks'], r['class_ids'], 
-                            class_names, r['scores'])
-    plt.savefig(os.path.join(out_dir,f))
+for d in C.test_dirs:
+    for root, dirs, files in os.walk(d):
+        for f in files:
+            try:
+                image = skimage.io.imread(os.path.join(root, f))
+                # Run detection
+                results = model.detect([image], verbose=1)
+                # Visualize results
+                r = results[0]
+                visualize.display_instances(image, r['rois'], r['masks'], r['class_ids'], 
+                                            class_names, r['scores'])
+                plt.savefig(os.path.join(out_dir,f))
+            except:
+                pr('    Ignoring file: '+root+' '+f)
 
