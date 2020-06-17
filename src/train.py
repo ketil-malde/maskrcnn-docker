@@ -30,7 +30,7 @@ class DeepVisionDataset(Dataset):
              error("'dataset_dirs' must be a list or a string")
 
          for images_dir in images_dirs:
-             filenames = [f for f in os.listdir(images_dir) if re.match(r'sim-201[78]_[0-9]+\.png', f)]
+             filenames = [f for f in os.listdir(images_dir) if re.match(r'sim-201[78]_.*\.png', f)]
              pr("*** Directory: ",images_dir,"Number of images seen: ", len(filenames), "***")
              for filename in filenames:
                  image_id = filename[:-4]  # skip .png suffix
