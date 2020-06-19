@@ -1,14 +1,19 @@
 Base configuration for a Docker instance
 
 Use as a starting point for projects.  Don't clone this directly, but
-fork it to your own namespace in GitLab (git.imr.no), and then
+fork it to your own namespace in GitLab og GitHub, and then
 go to Settings/Advanced and 'change path' to give it a unique name.
 
 Clone it, and
 
 0. Update this README to reflect the new project
-1. Edit the Dockerfile to add packages to be installed via apt-get
-2. Edit requirements.txt and add packages to be installed by pip
-3. Edit the Makefile to set the name of the image, and the program to run
+1. Edit the Makefile, to set a unique name for the image and select an appropriate Dockerfile
+2. Edit the Dockerfile, to select packages to be added by apt-get or pip
 
-Then type 'make .docker' to build the image, or just 'make' to build and run in one go.
+Then type 'make .docker' to build the image, or just 'make' to build and run in one go.  Then:
+
+3. Make other adjustments in the Makefile, choosing runtime and data volume options.
+4. Uncomment Makefile targets for train and test, and add your implementation in src/train.py and src/test.py 
+
+
+
