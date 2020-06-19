@@ -4,13 +4,14 @@ IMAGENAME = maskrcnn
 CONFIG    = tensorflow
 COMMAND   = bash
 DISKS     = -v $(PWD)/../imagesim-docker:/data:ro -v $(PWD):/project
+PORT      =
+GPU       = 0
+# RUNTIME   = --gpus device=$(GPU)
+RUNTIME   =
+# No need to change anything below this line
 USERID    = $(shell id -u)
 GROUPID   = $(shell id -g)
 USERNAME  = $(shell whoami)
-PORT      = -p 8888:8888
-RUNTIME   = --gpus=1
-# --runtime=nvidia 
-# No need to change anything below this line
 
 # Allows you to use sshfs to mount disks
 SSHFSOPTIONS = --cap-add SYS_ADMIN --device /dev/fuse
@@ -30,10 +31,6 @@ RUNCMD=docker run $(RUNTIME) --rm --user $(USERID):$(GROUPID) $(PORT) $(SSHFSOPT
 # Replace 'bash' with the command you want to do
 default: .docker
 	$(RUNCMD) $(COMMAND)
-
-# requires CONFIG=jupyter
-jupyter:
-	$(RUNCMD) jupyter notebook --ip '$(hostname -I)' --port 8888
 
 $(WEIGHTS): src/download_weights.py
 	$(RUNCMD) python3 src/download_weights.py
