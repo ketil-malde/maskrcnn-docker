@@ -5,9 +5,14 @@ CONFIG    = tensorflow
 COMMAND   = bash
 DISKS     = -v $(PWD)/../imagesim-docker:/data:ro -v $(PWD):/project
 PORT      =
+# For jupyter:
+# PORT    = -p 8888:8888
+NETWORK =
+# Sometimes necessary for networking to work:
+# NETWORK   = --network host
 GPU       = 0
-# RUNTIME   = --gpus device=$(GPU)
 RUNTIME   =
+# RUNTIME   = --gpus device=$(GPU)
 # No need to change anything below this line
 USERID    = $(shell id -u)
 GROUPID   = $(shell id -g)
@@ -21,14 +26,14 @@ USERCONFIG   = --build-arg user=$(USERNAME) --build-arg uid=$(USERID) --build-ar
 .PHONY: .docker test train
 
 .docker: docker/Dockerfile-$(CONFIG)
-	docker build $(USERCONFIG) -t $(USERNAME)-$(IMAGENAME) -f docker/Dockerfile-$(CONFIG) docker
+	docker build $(USERCONFIG) $(NETWORK) -t $(USERNAME)-$(IMAGENAME) -f docker/Dockerfile-$(CONFIG) docker
 
 WEIGHTS = mask_rcnn_coco.h5
 
 # Using -it for interactive use
-RUNCMD=docker run $(RUNTIME) --rm --user $(USERID):$(GROUPID) $(PORT) $(SSHFSOPTIONS) $(DISKS) -it $(USERNAME)-$(IMAGENAME)
+RUNCMD=docker run $(RUNTIME) $(NETWORK) --rm --user $(USERID):$(GROUPID) $(PORT) $(SSHFSOPTIONS) $(DISKS) -it $(USERNAME)-$(IMAGENAME)
 
-# Replace 'bash' with the command you want to do
+# Starts and interactive shell by default (COMMAND = bash)
 default: .docker
 	$(RUNCMD) $(COMMAND)
 
@@ -40,4 +45,3 @@ train: .docker src/train.py $(WEIGHTS)
 
 test: .docker src/test.py $(WEIGHTS)
 	$(RUNCMD) python3 src/test.py
-
