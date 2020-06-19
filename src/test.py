@@ -43,18 +43,21 @@ for d in C.test_dirs:
         for f in files:
             try:
                 image = skimage.io.imread(os.path.join(root, f))
-                # Run detection
-                results = model.detect([image], verbose=1)
-                # Visualize results
-                r = results[0]
-                with open(os.path.join(out_dir,f[:-4]+'.txt')) as ofile:
-                    for i, (y1, x1, y2, x2) in zip(r['class_ids'],r['rois']):
-                        # note flipped x and y vs imagesim dataset defaults
-                        csv.write(f,y1,x1,y2,x2,C.class_names[i])
-
-                visualize.display_instances(image, r['rois'], r['masks'], r['class_ids'], 
-                                            class_names, r['scores'])
-                plt.savefig(os.path.join(out_dir,f))
             except:
                 pr('    Ignoring file: '+root+' '+f)
+                continue
+
+            # Run detection
+            results = model.detect([image], verbose=1)
+            # Visualize results
+            r = results[0]
+            with open(os.path.join(out_dir,f[:-4]+'.txt'), 'w') as ofile:
+                csv_out = csv.writer(ofile)
+                for i, (y1, x1, y2, x2) in zip(r['class_ids'],r['rois']):
+                    # note flipped x and y vs imagesim dataset defaults
+                    csv_out.writerow([f,y1,x1,y2,x2,C.class_names[i]])
+
+            visualize.display_instances(image, r['rois'], r['masks'], r['class_ids'], 
+                                        class_names, r['scores'])
+            plt.savefig(os.path.join(out_dir,f))
 
