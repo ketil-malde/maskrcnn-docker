@@ -16,10 +16,6 @@ from util import pr, find_last
 from config import DeepVisionConfig, class_names
 import config as C
 
-if not os.path.exists('mask_rcnn_coco.h5'):
-    pr('No weights found (use download_weights.py)')
-    exit()
-
 # Directory of images to run detection on
 
 conf = DeepVisionConfig()
