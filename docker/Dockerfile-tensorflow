@@ -18,7 +18,7 @@ ENV HOME=/project
 RUN apt-get update && apt-get install -y sudo python3 python3-pip git
 
 # Configure user
-RUN groupadd -g $gid $user
+RUN groupadd -f -g $gid $user
 RUN useradd -u $uid -g $gid $user
 RUN usermod -a -G sudo $user
 RUN passwd -d $user
