@@ -36,8 +36,8 @@ RUNCMD=docker run $(RUNTIME) $(NETWORK) --rm --user $(USERID):$(GROUPID) $(PORT)
 default: .docker
 	$(RUNCMD) $(COMMAND)
 
-$(WEIGHTS): src/download_weights.py
-	$(RUNCMD) python3 src/download_weights.py
+$(WEIGHTS): .docker
+	$(RUNCMD) python3 /src/download_weights.py
 
 train: .docker $(WEIGHTS)
 	$(RUNCMD) python3 /src/train.py
