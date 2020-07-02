@@ -31,5 +31,7 @@ RUN cd Mask_RCNN && python setup.py install
 # keras 2.4.0 requires tensorflow 2.2, but Matterport Mask R-CNN doesn't support it
 RUN pip3 install --trusted-host pypi.python.org numpy scipy Pillow cython matplotlib scikit-image keras==2.3.1 opencv-python h5py imgaug IPython
 
+COPY src /src
+
 # Run when the container launches
 CMD "bash"

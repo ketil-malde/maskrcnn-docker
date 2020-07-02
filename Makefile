@@ -1,7 +1,6 @@
 # Change the configuration here.
 # Include your useid/name as part of IMAGENAME to avoid conflicts
 IMAGENAME = maskrcnn
-CONFIG    = tensorflow
 COMMAND   = bash
 DISKS     = -v $(PWD)/../imagesim-docker:/data:ro -v $(PWD):/project
 PORT      =
@@ -25,8 +24,8 @@ USERCONFIG   = --build-arg user=$(USERNAME) --build-arg uid=$(USERID) --build-ar
 
 .PHONY: .docker test train
 
-.docker: docker/Dockerfile-$(CONFIG)
-	docker build $(USERCONFIG) $(NETWORK) -t $(USERNAME)-$(IMAGENAME) -f docker/Dockerfile-$(CONFIG) docker
+.docker: Dockerfile
+	docker build $(USERCONFIG) $(NETWORK) -t $(USERNAME)-$(IMAGENAME) .
 
 WEIGHTS = mask_rcnn_coco.h5
 
@@ -40,8 +39,8 @@ default: .docker
 $(WEIGHTS): src/download_weights.py
 	$(RUNCMD) python3 src/download_weights.py
 
-train: .docker src/train.py $(WEIGHTS)
-	$(RUNCMD) python3 src/train.py
+train: .docker $(WEIGHTS)
+	$(RUNCMD) python3 /src/train.py
 
-test: .docker src/test.py $(WEIGHTS)
-	$(RUNCMD) python3 src/test.py
+test: .docker $(WEIGHTS)
+	$(RUNCMD) python3 /src/test.py
