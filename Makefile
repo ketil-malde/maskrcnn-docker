@@ -10,8 +10,8 @@ NETWORK =
 # Sometimes necessary for networking to work:
 # NETWORK   = --network host
 GPU       = 0
-RUNTIME   =
-# RUNTIME   = --gpus device=$(GPU)
+# RUNTIME   =
+RUNTIME   = --gpus device=$(GPU)
 # No need to change anything below this line
 USERID    = $(shell id -u)
 GROUPID   = $(shell id -g)
@@ -24,8 +24,8 @@ USERCONFIG   = --build-arg user=$(USERNAME) --build-arg uid=$(USERID) --build-ar
 
 .PHONY: .docker test train
 
-.docker: Dockerfile
-	docker build $(USERCONFIG) $(NETWORK) -t $(USERNAME)-$(IMAGENAME) .
+.docker: docker/Dockerfile
+	docker build $(USERCONFIG) $(NETWORK) -t $(USERNAME)-$(IMAGENAME) docker
 
 WEIGHTS = mask_rcnn_coco.h5
 
@@ -36,7 +36,8 @@ RUNCMD=docker run $(RUNTIME) $(NETWORK) --rm --user $(USERID):$(GROUPID) $(PORT)
 default: .docker
 	$(RUNCMD) $(COMMAND)
 
-$(WEIGHTS): .docker
+$(WEIGHTS):
+	docker build $(USERCONFIG) $(NETWORK) -t $(USERNAME)-$(IMAGENAME) docker
 	$(RUNCMD) python3 /src/download_weights.py
 
 train: .docker $(WEIGHTS)
