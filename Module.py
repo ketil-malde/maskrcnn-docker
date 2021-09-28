@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/python3
 
 # Script to wrap the Mask R-CNN, and to train and run it on Deep Vision data
 
