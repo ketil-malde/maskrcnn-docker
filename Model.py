@@ -16,33 +16,33 @@ RUNTIME='' # '--gpus device=0'
 
 # print(USERID, GROUPID, USERNAME)
 
+def docker_run(args=''):
+    os.system(f'docker run {RUNTIME} --rm --user {USERID}:{GROUPID} -v {DATAIN}:/data:ro -v {DATAOUT}:/project -it {USERNAME}-{IMAGENAME} {args}')
+
+def docker_build(args):
+    os.system(f'docker build --build-arg user={USERNAME} --build-arg uid={USERID} --build-arg gid={GROUPID} -t {USERNAME}-{IMAGENAME} .')
+
 class Model:
 
-    def docker_run(args=''):
-        os.system(f'docker run {RUNTIME} --rm --user {USERID}:{GROUPID} -v {DATAIN}:/data:ro -v {DATAOUT}:/project -it {USERNAME}-{IMAGENAME} {args}')
-
-    def docker_build(args):
-        os.system(f'docker build --build-arg user={USERNAME} --build-arg uid={USERID} --build-arg gid={GROUPID} -t {USERNAME}-{IMAGENAME} .')
-
-    def train():
+    def train(self):
         '''Train the network'''
         # if no initial weights: python3 /src/download_weights.py
         docker_run('python3 /src/train.py')
 
-    def check():
+    def check(self):
         '''Verify that data is in place and that the output doesn't exist'''
         pass
 
-    def predict(target, output):
+    def predict(self, target, output):
         '''Run a trained network on the data in target'''
         pass
 
-    def test():
+    def test(self):
         '''Run tests'''
         docker_run('python3 /src/test.py')
         pass
 
-    def status():
+    def status(self):
         '''Print the current training status'''
         # check if docker exists
         # check if network is trained (and validation accuracy?)
