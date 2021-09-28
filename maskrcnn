@@ -24,7 +24,8 @@ def docker_build(args):
 
 def train():
     '''Train the network'''
-    pass
+    # if no initial weights: python3 /src/download_weights.py
+    docker_run('python3 /src/train.py')
 
 def check():
     '''Verify that data is in place and that the output doesn't exist'''
@@ -32,6 +33,11 @@ def check():
 
 def predict(target, output):
     '''Run a trained network on the data in target'''
+    pass
+
+def test():
+    '''Run tests'''
+    docker_run('python3 /src/test.py')
     pass
 
 def status():
@@ -43,14 +49,23 @@ def status():
     # check if test output is present (and report)
     pass
 
-def build():
-    '''Build the docker instance'''
-    
 if __name__ == '__main__':
     import argparse
+    import sys
+    
+    if sys.argv[1] == 'train':
+        # p = argparse.ArgumentParser(description='Train Mask R-CNN')
+        train()
+    elif sys.argv[1] == 'test':
+        test()
+    elif sys.argv[1] == 'predict':
+        predict()
+    elif sys.argv[1] == 'check':
+        check()
+    elif sys.argv[1] == 'status':
+        status()
+    elif sys.argv[1] == 'build':
+        docker_build()
+    else:
+        error('Usage: {sys.argv[0]} [check,status,train,predict] ...')
 
-    p = argparse.ArgumentParser(description='Train/run/check/status for Mask R-CNN')
-    print(p)
-
-    # docker_build(0)
-    docker_run('ls -ltra ..')
